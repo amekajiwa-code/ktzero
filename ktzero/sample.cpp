@@ -67,17 +67,17 @@ bool  sample::Init()
     mJumpObj->Set(m_pDevice, m_pImmediateContext);
     mJumpObj->SetPos({ 0.0f, 0.0f, 0.0f });
     mJumpObj->SetScale(Vector3(32.0f, 51.0f, 1.0f));
-    mJumpObj->Create(TextureManager::GetInstance(), L"res/effect/spr_jumpcloud/jumpcloud_0", ShaderManager::GetInstance(), L"Plane.hlsl");
+    mJumpObj->Create(TextureManager::GetInstance(), L"res/effect/spr_jumpcloud/jumpcloud_0.png", ShaderManager::GetInstance(), L"Plane.hlsl");
 
     for (int iObj = 0; iObj < 10; iObj++)
     {
         Object* pObj = new Npc;
         pObj->Set(m_pDevice, m_pImmediateContext);
-        pObj->SetPos(Vector3(randstep(-600, 600), -480.0f, 0.0f));
-        pObj->SetScale(Vector3(50.0f, 50.0f, 1.0f));
+        pObj->SetPos(Vector3(randstep(-600, 600), -500.0f, 0.0f));
+        pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
         Vector2 rt = { pObj->m_vPos.mX, pObj->m_vPos.mY };
         pObj->SetRect(rt, pObj->m_vScale.mX * 2.0f, pObj->m_vScale.mY * 2.0f);
-        pObj->Create(TextureManager::GetInstance(), L"res/npc/anajuyo_alpha.png",
+        pObj->Create(TextureManager::GetInstance(), L"res/npc/Grunt/spr_grunt_idle/grunt_idle_0.png",
             ShaderManager::GetInstance(), L"Plane.hlsl");
         mNpcList.push_back(pObj);
     }
@@ -208,16 +208,8 @@ bool  sample::Frame()
     mCursorObj->SetRect(rt, mCursorObj->m_vScale.mX * 2.0f, mCursorObj->m_vScale.mY * 2.0f);
 
     mEffectObj->SetPos(mPlayer->m_vPos);
-
-    // 바닥 각도 (0도)를 기준으로 한 curMouse의 각도 계산
-    float deltaX = curMouse.mX - mMainCamera.mCameraPos.mX; // X 좌표 차이
-    float deltaY = curMouse.mY - mMainCamera.mCameraPos.mY; // Y 좌표 차이
-    float angleToMouse = atan2(deltaY, deltaX); // 라디안 단위로 각도 계산
-    mEffectObj->mRect.SetAngle(RadianToDegree(angleToMouse));
-
     rt = { mEffectObj->m_vPos.mX, mEffectObj->m_vPos.mY };
-    //x축 충돌범위 조금 늘림
-    mEffectObj->SetRect(rt, mEffectObj->m_vScale.mX * 2.5f, mEffectObj->m_vScale.mY * 2.0f);
+    mEffectObj->SetRect(rt, mEffectObj->m_vScale.mX * 2.0f, mEffectObj->m_vScale.mY * 2.0f);
 
     mPlayer->Frame();
     if (mPlayer->isJump)
@@ -246,7 +238,16 @@ bool  sample::Frame()
     {
         mPlayer->mEffectSound->PlayEffect();
         mPlayer->SetPlayerState(PlayerState::ATTACK);
-        
+
+        // 바닥 각도 (0도)를 기준으로 한 curMouse의 각도 계산
+        float deltaX = curMouse.mX - mMainCamera.mCameraPos.mX; // X 좌표 차이
+        float deltaY = curMouse.mY - mMainCamera.mCameraPos.mY; // Y 좌표 차이
+        float angleToMouse = atan2(deltaY, deltaX); // 라디안 단위로 각도 계산
+        mEffectObj->mRect.SetAngle(RadianToDegree(angleToMouse));
+    }
+
+    if (mPlayer->GetPlayerState() == PlayerState::ATTACK)
+    {
         for (auto obj : mNpcList)
         {
             if (obj->m_bDead) continue;
@@ -256,11 +257,6 @@ bool  sample::Frame()
                 obj->m_bDead = true;
                 mSlashDeath->Play(false);
             }
-            /*if (mEffectObj->mRect.ToRect(obj->mRect))
-            {
-                obj->m_bDead = true;
-                mSlashDeath->Play(false);
-            }*/
         }
     }
 
@@ -305,19 +301,14 @@ bool  sample::Render()
     #pragma region 이펙트_렌더
     if (mPlayer->GetPlayerState() == PlayerState::ATTACK)
     {
-        // 바닥 각도 (0도)를 기준으로 한 curMouse의 각도 계산
-        float deltaX = curMouse.mX - mMainCamera.mCameraPos.mX; // X 좌표 차이
-        float deltaY = curMouse.mY - mMainCamera.mCameraPos.mY; // Y 좌표 차이
-        float angleToMouse = atan2(deltaY, deltaX); // 라디안 단위로 각도 계산
-
         m_pImmediateContext->UpdateSubresource(mEffectObj->m_pVertexBuffer, 0, nullptr, &mEffectObj->m_VertexList.at(0), 0, 0);
-        mEffectObj->m_matWorld.ZRotate(angleToMouse);
+        mEffectObj->m_matWorld.ZRotate(DegreeToRadian(mEffectObj->mRect.mAngle));
         mEffectObj->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
         mEffectObj->PreRender();
 
         if (!mEffectList.empty())
         {
-            mEffectIndex = (int)(g_GameTimer * 10) % mEffectList.size();
+            mEffectIndex = (int)(g_GameTimer * 10 * Timer::GetInstance().mTimeScale) % mEffectList.size();
             if (mEffectList[mEffectIndex] != nullptr)
             {
                 mEffectList[mEffectIndex]->Apply(m_pImmediateContext, 0);
