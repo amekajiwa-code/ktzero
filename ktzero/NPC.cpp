@@ -1,8 +1,9 @@
 #include "NPC.h"
+#include "Timer.h"
 
 void Npc::Move()
 {
-	Vector3 vVelocity = m_vDirection * 500.0f * g_SecondPerFrame;
+	Vector3 vVelocity = m_vDirection * 1000.0f * Timer::GetInstance().mSecondPerFrame * Timer::GetInstance().mTimeScale;
 	m_vPos.mX = m_vPos.mX + vVelocity.mX;
 
 	if (m_vPos.mX < -static_cast<float>(g_dwWindowWidth))

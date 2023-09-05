@@ -9,7 +9,6 @@
 class Core : public Device
 {
 public:
-    Timer mGameTimer;
     Camera mMainCamera;
     Sound* mSound = nullptr;
     Sound* mSlashDeath;

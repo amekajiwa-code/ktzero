@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Input.h"
 #include "Writer.h"
+#include "Timer.h"
 
 void Player::MoveX(bool isFlipY)
 {
@@ -8,11 +9,11 @@ void Player::MoveX(bool isFlipY)
 
     if (isFlipY)
     {
-        m_vPos.mX -= mSpeed * g_SecondPerFrame;
+        m_vPos.mX -= mSpeed * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
     }
     else
     {
-        m_vPos.mX += mSpeed * g_SecondPerFrame;
+        m_vPos.mX += mSpeed * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
     }
 
     if (isFloor && !isDashSound) {
@@ -23,13 +24,13 @@ void Player::MoveX(bool isFlipY)
     {
         if (isFlipY)
         {
-            m_vPos.mX -= (mSpeed * 0.3f) * g_SecondPerFrame;
+            m_vPos.mX -= (mSpeed * 0.3f) * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
         }
         else
         {
-            m_vPos.mX += (mSpeed * 0.3f) * g_SecondPerFrame;
+            m_vPos.mX += (mSpeed * 0.3f) * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
         }
-        mDashTimer += g_SecondPerFrame;
+        mDashTimer += g_SecondPerFrame * Timer::GetInstance().mTimeScale;
     }
     else if (isFloor)
     {
@@ -48,7 +49,7 @@ void Player::PlayerMove()
     }
     if (Input::GetInstance().mkeyState['S'] == static_cast<DWORD>(KeyState::KEY_HOLD) && !isFloor)
     {
-        m_vPos.mY -= 800.0f * g_SecondPerFrame;
+        m_vPos.mY -= 800.0f * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
     }
     if (Input::GetInstance().mkeyState['A'] == static_cast<DWORD>(KeyState::KEY_HOLD))
     {
@@ -70,13 +71,13 @@ void Player::PlayerMove()
 
     if (isJump && (mJumpTimer <= MAX_JUMP_TIME))
     {
-        m_vPos.mY += (mPower * 0.7f) * g_SecondPerFrame;
-        mJumpTimer += g_SecondPerFrame;
+        m_vPos.mY += (mPower * 0.7f) * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
+        mJumpTimer += g_SecondPerFrame * Timer::GetInstance().mTimeScale;
         mPlayerState = PlayerState::JUMP;
     }
     else if (isFloor == false)
     {
-        m_vPos.mY -= mGrabity * g_SecondPerFrame;
+        m_vPos.mY -= mGrabity * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
         mJumpTimer = 0.0f;
         isJump = false;
         mPlayerState = PlayerState::FALL;
@@ -132,20 +133,20 @@ void Player::PlayerAttack()
 
         if (isFloor && direction.mY < 0.0f)
         {
-            mVelocity = NormalX * mPower * g_SecondPerFrame;
+            mVelocity = NormalX * mPower * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
         }
         else
         {
-            mVelocity = direction * mPower * g_SecondPerFrame;
+            mVelocity = direction * mPower * g_SecondPerFrame * Timer::GetInstance().mTimeScale;
         }
         m_vPos = m_vPos + mVelocity;
-        mAttackTimer += g_SecondPerFrame;  
+        mAttackTimer += g_SecondPerFrame * Timer::GetInstance().mTimeScale;
     }
     else if (mDelayTimer <= MAX_DELAY_TIME)
     {
 
         if (!isFloor) m_vPos = m_vPos + (mVelocity / 2);
-        mDelayTimer += g_SecondPerFrame;
+        mDelayTimer += g_SecondPerFrame * Timer::GetInstance().mTimeScale;
     }
     else
     {
@@ -206,6 +207,16 @@ bool Player::Init()
 
 bool Player::Frame()
 {
+    if (Input::GetInstance().mkeyState[VK_SHIFT] == static_cast<DWORD>(KeyState::KEY_HOLD))
+    {
+        Timer::GetInstance().mTimeScale = 0.25f;
+    }
+    if (Input::GetInstance().mkeyState[VK_SHIFT] == static_cast<DWORD>(KeyState::KEY_UP))
+    {
+        Timer::GetInstance().mTimeScale = 1.0f;
+    }
+
+
     if (mPlayerState == PlayerState::ATTACK)
     {
         PlayerAttack();

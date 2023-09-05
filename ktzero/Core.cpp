@@ -8,7 +8,7 @@ bool  Core::Release() { return true; }
 bool  Core::EngineInit()
 {
     Device::Init();
-    mGameTimer.Init();
+    Timer::GetInstance().Init();
     Input::GetInstance().Init();
     Writer::GetInstance().Init();
     SoundManager::GetInstance().Init();
@@ -20,7 +20,7 @@ bool  Core::EngineInit()
 
 bool  Core::EngineFrame()
 {
-    mGameTimer.Frame();
+    Timer::GetInstance().Frame();
     Input::GetInstance().Frame();
     Writer::GetInstance().Frame();
     SoundManager::GetInstance().Frame();
@@ -35,7 +35,7 @@ bool  Core::EngineRender()
 {
     Device::PreRender();
     Render();
-    mGameTimer.Render();
+    Timer::GetInstance().Render();
     Input::GetInstance().Render();
     Writer::GetInstance().Render();
     mMainCamera.Render();
@@ -47,7 +47,7 @@ bool  Core::EngineRender()
 bool  Core::EngineRelease()
 {
     Release();
-    mGameTimer.Release();
+    Timer::GetInstance().Release();
     Input::GetInstance().Release();
     Writer::GetInstance().Release();
     SoundManager::GetInstance().Release();
