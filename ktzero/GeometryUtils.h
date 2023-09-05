@@ -29,6 +29,10 @@ public:
     Vector2 operator*(float scalar) const;
     Vector2 operator/(float scalar) const;
     Vector2& operator=(const Vector2& other);
+    //³»Àû
+    float operator|(const Vector2& other) const { 
+        return mX * other.mX + mY * other.mY;
+    }
 
     float getX() const { return mX; }
     float getY() const { return mY; }
@@ -268,6 +272,7 @@ struct Rect
     bool  m_bEnable = true;
     float m_fWidth = 0.0f;
     float m_fHeight = 0.0f;
+    float mAngle;
     Vector2 m_Point[4];
     Vector2 m_Center;
     Vector2 m_Half;
@@ -292,13 +297,10 @@ struct Rect
     bool ToPoint(Vector2& p);
     Rect();
     Rect(float fx, float fy, float fw, float fh);
-};
 
-//class OBB
-//{
-//    Vector2 GetHeightVec(Rect rt);
-//    Vector2 GetWidthVec(Rect rt);
-//    bool RectToPoint(Vector2& point, Rect& rect);
-//    bool RectToRect(Rect& rect1, Rect& rect2);
-//};
+    void SetAngle(float angle)
+    {
+        mAngle = angle;
+    }
+};
 #endif

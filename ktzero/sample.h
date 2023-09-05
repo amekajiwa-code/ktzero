@@ -3,6 +3,7 @@
 #include "PlaneObject.h"
 #include "Player.h"
 #include "NPC.h"
+#include "OBB.h"
 
 class sample : public Core
 {
@@ -26,6 +27,8 @@ private:
     vector<Object*> mNpcList;
     vector<Object*> mFloorList;
     vector<const Texture*>  mEffectList;
+
+    OBB obb;
 public:
     bool  Init();
     bool  Frame();

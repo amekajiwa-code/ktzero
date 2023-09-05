@@ -208,8 +208,16 @@ bool  sample::Frame()
     mCursorObj->SetRect(rt, mCursorObj->m_vScale.mX * 2.0f, mCursorObj->m_vScale.mY * 2.0f);
 
     mEffectObj->SetPos(mPlayer->m_vPos);
+
+    // 바닥 각도 (0도)를 기준으로 한 curMouse의 각도 계산
+    float deltaX = curMouse.mX - mMainCamera.mCameraPos.mX; // X 좌표 차이
+    float deltaY = curMouse.mY - mMainCamera.mCameraPos.mY; // Y 좌표 차이
+    float angleToMouse = atan2(deltaY, deltaX); // 라디안 단위로 각도 계산
+    mEffectObj->mRect.SetAngle(RadianToDegree(angleToMouse));
+
     rt = { mEffectObj->m_vPos.mX, mEffectObj->m_vPos.mY };
-    mEffectObj->SetRect(rt, mEffectObj->m_vScale.mX * 2.0f, mEffectObj->m_vScale.mY * 2.0f);
+    //x축 충돌범위 조금 늘림
+    mEffectObj->SetRect(rt, mEffectObj->m_vScale.mX * 2.5f, mEffectObj->m_vScale.mY * 2.0f);
 
     mPlayer->Frame();
     if (mPlayer->isJump)
@@ -238,16 +246,21 @@ bool  sample::Frame()
     {
         mPlayer->mEffectSound->PlayEffect();
         mPlayer->SetPlayerState(PlayerState::ATTACK);
-
+        
         for (auto obj : mNpcList)
         {
             if (obj->m_bDead) continue;
 
-            if (mEffectObj->mRect.ToRect(obj->mRect))
+            if (obb.RectToRect(mEffectObj->mRect, obj->mRect))
             {
                 obj->m_bDead = true;
                 mSlashDeath->Play(false);
             }
+            /*if (mEffectObj->mRect.ToRect(obj->mRect))
+            {
+                obj->m_bDead = true;
+                mSlashDeath->Play(false);
+            }*/
         }
     }
 
@@ -296,6 +309,7 @@ bool  sample::Render()
         float deltaX = curMouse.mX - mMainCamera.mCameraPos.mX; // X 좌표 차이
         float deltaY = curMouse.mY - mMainCamera.mCameraPos.mY; // Y 좌표 차이
         float angleToMouse = atan2(deltaY, deltaX); // 라디안 단위로 각도 계산
+
         m_pImmediateContext->UpdateSubresource(mEffectObj->m_pVertexBuffer, 0, nullptr, &mEffectObj->m_VertexList.at(0), 0, 0);
         mEffectObj->m_matWorld.ZRotate(angleToMouse);
         mEffectObj->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
