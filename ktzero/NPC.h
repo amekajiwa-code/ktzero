@@ -15,6 +15,8 @@ private:
 	Vector3 m_vDirection = { 0.0f, 0.0f, 0.0f };
 	NPCState mNPCState;
 	vector<pair<NPCState, const Texture*>> mAniList;
+	int mAniCount = 0;
+	float mAniTimer = 0.0f;
 public:
 	Npc();
 	virtual ~Npc();
@@ -26,6 +28,9 @@ public:
 
 	void Move();
 
+	virtual bool Init();
 	virtual bool Frame();
+	virtual bool Render();
+	virtual bool Release();
 };
 

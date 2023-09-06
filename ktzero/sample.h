@@ -24,7 +24,7 @@ private:
     int mJumpIndex = 0;
 
     vector<const Texture*>  mTexList;
-    vector<Object*> mNpcList;
+    vector<Npc*> mNpcList;
     vector<Object*> mFloorList;
     vector<const Texture*>  mEffectList;
 

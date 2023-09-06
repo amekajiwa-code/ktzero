@@ -71,7 +71,7 @@ bool  sample::Init()
 
     for (int iObj = 0; iObj < 10; iObj++)
     {
-        Object* pObj = new Npc;
+        Npc* pObj = new Npc;
         pObj->Set(m_pDevice, m_pImmediateContext);
         pObj->SetPos(Vector3(randstep(-600, 600), -500.0f, 0.0f));
         pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
@@ -175,6 +175,28 @@ bool  sample::Init()
     mEffectList.push_back(tex5);
     #pragma endregion
 
+#pragma region NPC_애니메이션
+    for (Npc* npc : mNpcList)
+    {
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_0.png");
+        npc->AddAnimationList(NPCState::IDLE, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_1.png");
+        npc->AddAnimationList(NPCState::IDLE, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_2.png");
+        npc->AddAnimationList(NPCState::IDLE, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_3.png");
+        npc->AddAnimationList(NPCState::IDLE, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_4.png");
+        npc->AddAnimationList(NPCState::IDLE, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_5.png");
+        npc->AddAnimationList(NPCState::IDLE, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_6.png");
+        npc->AddAnimationList(NPCState::IDLE, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_7.png");
+        npc->AddAnimationList(NPCState::IDLE, tex);
+    }
+#pragma endregion
+
     #pragma region 폰트
     HRESULT hr;
 
@@ -202,7 +224,6 @@ bool  sample::Frame()
         { static_cast<float>(g_dwWindowWidth),
         static_cast<float>(g_dwWindowHeight) },
         mMainCamera.mCameraPos);
-    Input::GetInstance().curWorldPos = curMouse;
     mCursorObj->SetPos(curMouse);
     Vector2 rt = { mCursorObj->m_vPos.mX * 2.0f, mCursorObj->m_vPos.mY * 2.0f };
     mCursorObj->SetRect(rt, mCursorObj->m_vScale.mX * 2.0f, mCursorObj->m_vScale.mY * 2.0f);
@@ -226,7 +247,6 @@ bool  sample::Frame()
     {
         if (obj->m_bDead == false)
         {
-            obj->Move();
             obj->Frame();
             Vector2 rt = { obj->m_vPos.mX, obj->m_vPos.mY };
             obj->SetRect(rt, obj->m_vScale.mX * 2.0f, obj->m_vScale.mY * 2.0f);
@@ -244,7 +264,10 @@ bool  sample::Frame()
         float deltaY = curMouse.mY - mMainCamera.mCameraPos.mY; // Y 좌표 차이
         float angleToMouse = atan2(deltaY, deltaX); // 라디안 단위로 각도 계산
         mEffectObj->mRect.SetAngle(RadianToDegree(angleToMouse));
+    
+        Input::GetInstance().curWorldPos = curMouse;
     }
+
 
     if (mPlayer->GetPlayerState() == PlayerState::ATTACK)
     {

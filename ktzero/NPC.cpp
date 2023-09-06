@@ -29,6 +29,11 @@ void Npc::Move()
 
 };
 
+bool Npc::Init()
+{
+	return true;
+}
+
 bool Npc::Frame()
 {
 	switch(mNPCState)
@@ -53,6 +58,38 @@ bool Npc::Frame()
 	m_matWorld = matScale * matRotation * matTranslate;
 
 	return true;
+}
+
+bool Npc::Render()
+{
+	PlaneObject::PreRender();
+
+	if (!mAniList.empty())
+	{
+		vector<const Texture*> texList = GetAnimationList(mNPCState);
+
+		if (mAniTimer < 0.1f)
+		{
+			mAniTimer += Timer::GetInstance().mSecondPerFrame * Timer::GetInstance().mTimeScale;
+		}
+		else
+		{
+			++mAniCount;
+			mAniTimer = 0.0f;
+		}
+
+		if (mAniCount >= texList.size()) mAniCount = 0;
+		else texList[mAniCount]->Apply(m_pImmediateContext, 0);
+	}
+	PlaneObject::PostRender();
+
+	return true;
+}
+
+
+bool Npc::Release()
+{
+	return false;
 }
 
 NPCState Npc::GetNPCState()
