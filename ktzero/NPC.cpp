@@ -1,9 +1,11 @@
 #include "NPC.h"
 #include "Timer.h"
+#include "cmath"
 
 void Npc::Move()
 {
-	Vector3 vVelocity = m_vDirection * 300.0f * Timer::GetInstance().mSecondPerFrame * Timer::GetInstance().mTimeScale;
+	m_vDirection = mTarget->m_vPos - PlaneObject::m_vPos;
+	Vector3 vVelocity = m_vDirection * Timer::GetInstance().mSecondPerFrame * Timer::GetInstance().mTimeScale;
 	m_vPos.mX = m_vPos.mX + vVelocity.mX;
 
 	if (m_vPos.mX < -static_cast<float>(g_dwWindowWidth))
@@ -36,6 +38,8 @@ bool Npc::Init()
 
 bool Npc::Frame()
 {
+	DetectPlayer();
+
 	switch(mNPCState)
 	{
 	case NPCState::IDLE:
@@ -119,6 +123,55 @@ vector<const Texture*> Npc::GetAnimationList(NPCState state)
 void Npc::AddAnimationList(NPCState state, const Texture* texture)
 {
 	mAniList.push_back(make_pair(state, texture));
+}
+
+bool Npc::DetectPlayer()
+{
+	float range = PlaneObject::m_vPos.mX - mTarget->m_vPos.mX;
+
+	if (range > 0)
+	{
+		m_VertexList[0].t.mX = 1.0f; m_VertexList[0].t.mY = 0.0f;
+		m_VertexList[1].t.mX = 0.0f; m_VertexList[1].t.mY = 0.0f;
+		m_VertexList[2].t.mX = 1.0f; m_VertexList[2].t.mY = 1.0f;
+		m_VertexList[3].t.mX = 1.0f; m_VertexList[3].t.mY = 1.0f;
+		m_VertexList[4].t.mX = 0.0f; m_VertexList[4].t.mY = 0.0f;
+		m_VertexList[5].t.mX = 0.0f; m_VertexList[5].t.mY = 1.0f;
+	}
+	else
+	{
+		m_VertexList[0].t.mX = 0.0f; m_VertexList[0].t.mY = 0.0f;
+		m_VertexList[1].t.mX = 1.0f; m_VertexList[1].t.mY = 0.0f;
+		m_VertexList[2].t.mX = 0.0f; m_VertexList[2].t.mY = 1.0f;
+		m_VertexList[3].t.mX = 0.0f; m_VertexList[3].t.mY = 1.0f;
+		m_VertexList[4].t.mX = 1.0f; m_VertexList[4].t.mY = 0.0f;
+		m_VertexList[5].t.mX = 1.0f; m_VertexList[5].t.mY = 1.0f;
+	}
+	m_pImmediateContext->UpdateSubresource(m_pVertexBuffer, 0, nullptr, &m_VertexList.at(0), 0, 0);
+
+	if (fabs(range) < 100.0f)
+	{
+		mNPCState = NPCState::ATTACK;
+		PlaneObject::SetScale({ 44.0f, 42.0f, 1.0f });
+		return true;
+	}
+	else if (fabs(range) < 300.0f)
+	{
+		mNPCState = NPCState::RUN;
+		PlaneObject::SetScale({ 36.0f, 39.0f, 1.0f });
+		return true;
+	}
+	else
+	{
+		mNPCState = NPCState::IDLE;
+		PlaneObject::SetScale({ 30.0f, 36.0f, 1.0f });
+		return false;
+	}
+}
+
+void Npc::SetTarget(Object* target)
+{
+	mTarget = target;
 }
 
 Npc::Npc()

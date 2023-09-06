@@ -80,6 +80,7 @@ bool  sample::Init()
         pObj->Create(TextureManager::GetInstance(), L"res/npc/Grunt/spr_grunt_idle/grunt_idle_0.png",
             ShaderManager::GetInstance(), L"Plane.hlsl");
         mNpcList.push_back(pObj);
+        pObj->SetTarget(mPlayer);
     }
     #pragma endregion
 
@@ -194,6 +195,44 @@ bool  sample::Init()
         npc->AddAnimationList(NPCState::IDLE, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_7.png");
         npc->AddAnimationList(NPCState::IDLE, tex);
+
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_0.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_1.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_2.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_3.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_4.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_5.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_6.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_7.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_8.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_9.png");
+        npc->AddAnimationList(NPCState::RUN, tex);
+
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_0.png");
+        npc->AddAnimationList(NPCState::ATTACK, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_1.png");
+        npc->AddAnimationList(NPCState::ATTACK, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_2.png");
+        npc->AddAnimationList(NPCState::ATTACK, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_3.png");
+        npc->AddAnimationList(NPCState::ATTACK, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_4.png");
+        npc->AddAnimationList(NPCState::ATTACK, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_5.png");
+        npc->AddAnimationList(NPCState::ATTACK, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_6.png");
+        npc->AddAnimationList(NPCState::ATTACK, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_7.png");
+        npc->AddAnimationList(NPCState::ATTACK, tex);
     }
 #pragma endregion
 
