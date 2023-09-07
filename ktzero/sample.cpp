@@ -51,7 +51,7 @@ bool  sample::Init()
 
     mPlayer = new Player;
     mPlayer->Set(m_pDevice, m_pImmediateContext);
-    mPlayer->SetPos({ 0.0f, 500.0f, 0.0f });
+    mPlayer->SetPos({ 0.0f, 0.0f, 0.0f });
     mPlayer->SetScale(Vector3(36.0f, 35.0f, 1.0f));
     rt = { mPlayer->m_vPos.mX * 2.0f, mPlayer->m_vPos.mY * 2.0f };
     mPlayer->SetRect(rt, mPlayer->m_vScale.mX * 2.0f, mPlayer->m_vScale.mY * 2.0f);
@@ -63,17 +63,11 @@ bool  sample::Init()
     mEffectObj->SetScale(Vector3(123.0f, 30.0f, 1.0f));
     mEffectObj->Create(TextureManager::GetInstance(), L"res/effect/spr_master_slash/master_slash_0.png", ShaderManager::GetInstance(), L"Plane.hlsl");
 
-    mJumpObj = new PlaneObject;
-    mJumpObj->Set(m_pDevice, m_pImmediateContext);
-    mJumpObj->SetPos({ 0.0f, 0.0f, 0.0f });
-    mJumpObj->SetScale(Vector3(32.0f, 51.0f, 1.0f));
-    mJumpObj->Create(TextureManager::GetInstance(), L"res/effect/spr_jumpcloud/jumpcloud_0.png", ShaderManager::GetInstance(), L"Plane.hlsl");
-
-    for (int iObj = 0; iObj < 1; iObj++)
+    for (int iObj = 0; iObj < 5; iObj++)
     {
         Npc* pObj = new Npc;
         pObj->Set(m_pDevice, m_pImmediateContext);
-        pObj->SetPos(Vector3(randstep(-600, 600), -500.0f, 0.0f));
+        pObj->SetPos(Vector3(randstep(-600, 600), -static_cast<float>(g_dwWindowHeight) + 230.0f, 0.0f));
         pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
         Vector2 rt = { pObj->m_vPos.mX, pObj->m_vPos.mY };
         pObj->SetRect(rt, pObj->m_vScale.mX * 2.0f, pObj->m_vScale.mY * 2.0f);
@@ -86,81 +80,94 @@ bool  sample::Init()
 
     #pragma region 플레이어_애니메이션
     const Texture* tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_0.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_1.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_2.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_3.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_4.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_5.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_6.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_7.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_8.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_9.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
     tex = TextureManager::GetInstance().Load(L"res/player/spr_idle/idle_10.png");
-    mPlayer->mIdleList.push_back(tex);
+    mPlayer->AddAnimationList(PlayerState::IDLE, tex);
 
-    const Texture* tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_0.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_1.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_2.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_3.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_4.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_5.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_6.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_7.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_8.png");
-    mPlayer->mRunList.push_back(tex1);
-    tex1 = TextureManager::GetInstance().Load(L"res/player/spr_run/run_9.png");
-    mPlayer->mRunList.push_back(tex1);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_0.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_1.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_2.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_3.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_4.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_5.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_6.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_7.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_8.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_run/run_9.png");
+    mPlayer->AddAnimationList(PlayerState::RUN, tex);
 
-    const Texture* tex2 = TextureManager::GetInstance().Load(L"res/player/spr_jump/jump_0.png");
-    mPlayer->mJumpList.push_back(tex2);
-    tex2 = TextureManager::GetInstance().Load(L"res/player/spr_jump/jump_1.png");
-    mPlayer->mJumpList.push_back(tex2);
-    tex2 = TextureManager::GetInstance().Load(L"res/player/spr_jump/jump_2.png");
-    mPlayer->mJumpList.push_back(tex2);
-    tex2 = TextureManager::GetInstance().Load(L"res/player/spr_jump/jump_3.png");
-    mPlayer->mJumpList.push_back(tex2);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_jump/jump_0.png");
+    mPlayer->AddAnimationList(PlayerState::JUMP, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_jump/jump_1.png");
+    mPlayer->AddAnimationList(PlayerState::JUMP, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_jump/jump_2.png");
+    mPlayer->AddAnimationList(PlayerState::JUMP, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_jump/jump_3.png");
+    mPlayer->AddAnimationList(PlayerState::JUMP, tex);
 
-    const Texture* tex3 = TextureManager::GetInstance().Load(L"res/player/spr_fall/fall_0.png");
-    mPlayer->mFallList.push_back(tex3);
-    tex3 = TextureManager::GetInstance().Load(L"res/player/spr_fall/fall_1.png");
-    mPlayer->mFallList.push_back(tex3);
-    tex3 = TextureManager::GetInstance().Load(L"res/player/spr_fall/fall_2.png");
-    mPlayer->mFallList.push_back(tex3);
-    tex3 = TextureManager::GetInstance().Load(L"res/player/spr_fall/fall_3.png");
-    mPlayer->mFallList.push_back(tex3);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_fall/fall_0.png");
+    mPlayer->AddAnimationList(PlayerState::FALL, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_fall/fall_1.png");
+    mPlayer->AddAnimationList(PlayerState::FALL, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_fall/fall_2.png");
+    mPlayer->AddAnimationList(PlayerState::FALL, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_fall/fall_3.png");
+    mPlayer->AddAnimationList(PlayerState::FALL, tex);
 
-    const Texture* tex4 = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_0.png");
-    mPlayer->mAttackList.push_back(tex4);
-    tex4 = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_1.png");
-    mPlayer->mAttackList.push_back(tex4);
-    tex4 = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_2.png");
-    mPlayer->mAttackList.push_back(tex4);
-    tex4 = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_3.png");
-    mPlayer->mAttackList.push_back(tex4);
-    tex4 = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_4.png");
-    mPlayer->mAttackList.push_back(tex4);
-    tex4 = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_5.png");
-    mPlayer->mAttackList.push_back(tex4);
-    tex4 = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_6.png");
-    mPlayer->mAttackList.push_back(tex4);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_0.png");
+    mPlayer->AddAnimationList(PlayerState::ATTACK, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_1.png");
+    mPlayer->AddAnimationList(PlayerState::ATTACK, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_2.png");
+    mPlayer->AddAnimationList(PlayerState::ATTACK, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_3.png");
+    mPlayer->AddAnimationList(PlayerState::ATTACK, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_4.png");
+    mPlayer->AddAnimationList(PlayerState::ATTACK, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_5.png");
+    mPlayer->AddAnimationList(PlayerState::ATTACK, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_attack/attack_6.png");
+    mPlayer->AddAnimationList(PlayerState::ATTACK, tex);
+
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_ground/ground_0.png");
+    mPlayer->AddAnimationList(PlayerState::DEAD, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_ground/ground_1.png");
+    mPlayer->AddAnimationList(PlayerState::DEAD, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_ground/ground_2.png");
+    mPlayer->AddAnimationList(PlayerState::DEAD, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_ground/ground_3.png");
+    mPlayer->AddAnimationList(PlayerState::DEAD, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_ground/ground_4.png");
+    mPlayer->AddAnimationList(PlayerState::DEAD, tex);
+    tex = TextureManager::GetInstance().Load(L"res/player/spr_ground/ground_5.png");
+    mPlayer->AddAnimationList(PlayerState::DEAD, tex);
     #pragma endregion
     
     #pragma region 이펙트_애니메이션
@@ -176,96 +183,96 @@ bool  sample::Init()
     mEffectList.push_back(tex5);
     #pragma endregion
 
-#pragma region NPC_애니메이션
+    #pragma region NPC_애니메이션
     for (Npc* npc : mNpcList)
     {
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_0.png");
-        npc->AddAnimationList(NPCState::IDLE, tex);
+        npc->AddAnimationList(NpcState::IDLE, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_1.png");
-        npc->AddAnimationList(NPCState::IDLE, tex);
+        npc->AddAnimationList(NpcState::IDLE, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_2.png");
-        npc->AddAnimationList(NPCState::IDLE, tex);
+        npc->AddAnimationList(NpcState::IDLE, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_3.png");
-        npc->AddAnimationList(NPCState::IDLE, tex);
+        npc->AddAnimationList(NpcState::IDLE, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_4.png");
-        npc->AddAnimationList(NPCState::IDLE, tex);
+        npc->AddAnimationList(NpcState::IDLE, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_5.png");
-        npc->AddAnimationList(NPCState::IDLE, tex);
+        npc->AddAnimationList(NpcState::IDLE, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_6.png");
-        npc->AddAnimationList(NPCState::IDLE, tex);
+        npc->AddAnimationList(NpcState::IDLE, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_idle/grunt_idle_7.png");
-        npc->AddAnimationList(NPCState::IDLE, tex);
+        npc->AddAnimationList(NpcState::IDLE, tex);
 
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_0.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_1.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_2.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_3.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_4.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_5.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_6.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_7.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_8.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_run/grunt_run_9.png");
-        npc->AddAnimationList(NPCState::RUN, tex);
+        npc->AddAnimationList(NpcState::RUN, tex);
 
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_0.png");
-        npc->AddAnimationList(NPCState::ATTACK, tex);
+        npc->AddAnimationList(NpcState::ATTACK, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_1.png");
-        npc->AddAnimationList(NPCState::ATTACK, tex);
+        npc->AddAnimationList(NpcState::ATTACK, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_2.png");
-        npc->AddAnimationList(NPCState::ATTACK, tex);
+        npc->AddAnimationList(NpcState::ATTACK, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_3.png");
-        npc->AddAnimationList(NPCState::ATTACK, tex);
+        npc->AddAnimationList(NpcState::ATTACK, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_4.png");
-        npc->AddAnimationList(NPCState::ATTACK, tex);
+        npc->AddAnimationList(NpcState::ATTACK, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_5.png");
-        npc->AddAnimationList(NPCState::ATTACK, tex);
+        npc->AddAnimationList(NpcState::ATTACK, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_6.png");
-        npc->AddAnimationList(NPCState::ATTACK, tex);
+        npc->AddAnimationList(NpcState::ATTACK, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_7.png");
-        npc->AddAnimationList(NPCState::ATTACK, tex);
+        npc->AddAnimationList(NpcState::ATTACK, tex);
 
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_0.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_1.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_2.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_3.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_4.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_5.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_6.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_7.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_8.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_9.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_10.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_11.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_12.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_13.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_14.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_15.png");
-        npc->AddAnimationList(NPCState::DEAD, tex);
+        npc->AddAnimationList(NpcState::DEAD, tex);
     }
 #pragma endregion
 
@@ -287,6 +294,9 @@ bool  sample::Init()
 
     //카메라생성
     mMainCamera.Create(mPlayer->m_vPos, { static_cast<float>(m_dwWindowWidth), static_cast<float>(m_dwWindowHeight) });
+    //게임매니저 세팅
+    GameManager::GetInstance().player = mPlayer;
+    GameManager::GetInstance().npcList = mNpcList;
 
     return true;
 }
@@ -297,6 +307,7 @@ bool  sample::Frame()
         static_cast<float>(g_dwWindowHeight) },
         mMainCamera.mCameraPos);
     mCursorObj->SetPos(curMouse);
+
     Vector2 rt = { mCursorObj->m_vPos.mX * 2.0f, mCursorObj->m_vPos.mY * 2.0f };
     mCursorObj->SetRect(rt, mCursorObj->m_vScale.mX * 2.0f, mCursorObj->m_vScale.mY * 2.0f);
 
@@ -305,11 +316,6 @@ bool  sample::Frame()
     mEffectObj->SetRect(rt, mEffectObj->m_vScale.mX * 2.0f, mEffectObj->m_vScale.mY * 2.0f);
 
     mPlayer->Frame();
-    if (mPlayer->isJump)
-    {
-        mJumpObj->SetPos(mPlayer->m_vPos);
-        mJumpObj->Frame();
-    }
     mMapObj->Frame();
     mFloorObj->Frame();
     mCursorObj->Frame();
@@ -318,18 +324,16 @@ bool  sample::Frame()
     for (auto obj : mNpcList)
     {
         obj->Frame();
-        Vector2 rt = { obj->m_vPos.mX, obj->m_vPos.mY };
-        obj->SetRect(rt, obj->m_vScale.mX * 2.0f, obj->m_vScale.mY * 2.0f);
-        /*if (obj->m_bDead == false)
+        if (obj->m_bDead == false)
         {
-            obj->Frame();
             Vector2 rt = { obj->m_vPos.mX, obj->m_vPos.mY };
-            obj->SetRect(rt, obj->m_vScale.mX * 2.0f, obj->m_vScale.mY * 2.0f);
-        }*/
+            obj->SetRect(rt, obj->m_vScale.mX, obj->m_vScale.mY);
+        }
     }
 
     if ((Input::GetInstance().mkeyState[VK_LBUTTON] == 2) &&
-        (mPlayer->GetPlayerState() != PlayerState::ATTACK))
+        (mPlayer->GetPlayerState() != PlayerState::ATTACK) &&
+        (mPlayer->GetPlayerState() != PlayerState::DEAD))
     {
         mPlayer->mEffectSound->PlayEffect();
         mPlayer->SetPlayerState(PlayerState::ATTACK);
@@ -353,7 +357,7 @@ bool  sample::Frame()
             if (obb.RectToRect(mEffectObj->mRect, obj->mRect))
             {
                 obj->m_bDead = true;
-                obj->SetNPCState(NPCState::DEAD);
+                obj->SetNPCState(NpcState::DEAD);
                 obj->SetScale({56.0f, 41.0f, 1.0f});
                 mSlashDeath->Play(false);
             }
@@ -376,26 +380,13 @@ bool  sample::Render()
 
     for (auto obj : mNpcList)
     {
-        //if (obj->m_bDead) continue;
         obj->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
         obj->Render();
     }
 
     #pragma region 플레이어_렌더
     mPlayer->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
-    mPlayer->PreRender();
     mPlayer->Render();
-    mTexList.clear();
-    mTexList = mPlayer->GetPlayerAnimation();
-    if (!mTexList.empty())
-    {
-        mTexIndex = (int)(g_GameTimer * 10) % mTexList.size();
-        if (mTexList[mTexIndex] != nullptr)
-        {
-            mTexList[mTexIndex]->Apply(m_pImmediateContext, 0);
-        }
-    }
-    mPlayer->PostRender();
     #pragma endregion
 
     #pragma region 이펙트_렌더
@@ -417,10 +408,6 @@ bool  sample::Render()
         mEffectObj->PostRender();
     }
 
-    if (mPlayer->isJump)
-    {
-        mJumpObj->Render();
-    }
     #pragma endregion
 
    mCursorObj->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
@@ -448,7 +435,7 @@ bool  sample::Release()
     return true;
 }
 
-int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) // 메인
+int wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) // 메인
 {
     sample mySample;
     mySample.SetRegisterClassWindow(hInstance);

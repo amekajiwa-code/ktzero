@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "NPC.h"
 #include "OBB.h"
+#include "GameManager.h"
 
 class sample : public Core
 {
@@ -15,7 +16,6 @@ private:
     Object* mFloorObj = nullptr;
     Object* mCursorObj = nullptr;
     Object* mEffectObj = nullptr;
-    Object* mJumpObj = nullptr;
 
     Vector3 curMouse = { 0, 0, 0 };
 

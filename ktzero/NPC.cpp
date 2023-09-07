@@ -6,7 +6,7 @@
 void Npc::Move()
 {
 	m_vDirection = mTarget->m_vPos - PlaneObject::m_vPos;
-	Vector3 vVelocity = m_vDirection * Timer::GetInstance().mSecondPerFrame * Timer::GetInstance().mTimeScale;
+	Vector3 vVelocity = m_vDirection * Timer::GetInstance().mSecondPerFrame;
 	m_vPos.mX = m_vPos.mX + vVelocity.mX;
 
 	if (m_vPos.mX < -static_cast<float>(g_dwWindowWidth))
@@ -39,7 +39,7 @@ void Npc::Attack()
 	{
 		if (obb.RectToRect(PlaneObject::mRect, mTarget->mRect))
 		{
-			cout << "sfds";
+			mTarget->m_bDead = true;
 		}
 	}
 }
@@ -53,18 +53,18 @@ bool Npc::Frame()
 {
 	switch(mNPCState)
 	{
-	case NPCState::IDLE:
+	case NpcState::IDLE:
 		DetectPlayer();
 		break;
-	case NPCState::RUN:
+	case NpcState::RUN:
 		Move();
 		DetectPlayer();
 		break;
-	case NPCState::ATTACK:
+	case NpcState::ATTACK:
 		Attack();
 		DetectPlayer();
 		break;
-	case NPCState::DEAD:
+	case NpcState::DEAD:
 		break;
 	default:
 		break;
@@ -89,7 +89,7 @@ bool Npc::Render()
 		{
 			if (mAniTimer < 0.1f)
 			{
-				mAniTimer += Timer::GetInstance().mSecondPerFrame * Timer::GetInstance().mTimeScale;
+				mAniTimer += Timer::GetInstance().mSecondPerFrame;
 			}
 			else
 			{
@@ -97,7 +97,7 @@ bool Npc::Render()
 				mAniTimer = 0.0f;
 			}
 
-			if (mAniCount >= texList.size() && mNPCState == NPCState::DEAD)
+			if (mAniCount >= texList.size() && mNPCState == NpcState::DEAD)
 			{
 				--mAniCount;
 			}
@@ -120,17 +120,17 @@ bool Npc::Release()
 	return false;
 }
 
-NPCState Npc::GetNPCState()
+NpcState Npc::GetNPCState()
 {
 	return mNPCState;
 }
 
-void Npc::SetNPCState(NPCState state)
+void Npc::SetNPCState(NpcState state)
 {
 	mNPCState = state;
 }
 
-vector<const Texture*> Npc::GetAnimationList(NPCState state)
+vector<const Texture*> Npc::GetAnimationList(NpcState state)
 {	
 	vector<const Texture*> texList;
 
@@ -144,7 +144,7 @@ vector<const Texture*> Npc::GetAnimationList(NPCState state)
 	return texList;
 }
 
-void Npc::AddAnimationList(NPCState state, const Texture* texture)
+void Npc::AddAnimationList(NpcState state, const Texture* texture)
 {
 	mAniList.push_back(make_pair(state, texture));
 }
@@ -173,21 +173,21 @@ bool Npc::DetectPlayer()
 	}
 	m_pImmediateContext->UpdateSubresource(m_pVertexBuffer, 0, nullptr, &m_VertexList.at(0), 0, 0);
 
-	if (fabs(range) < 100.0f)
+	if (fabs(range) < 50.0f && mNPCState != NpcState::DEAD)
 	{
-		mNPCState = NPCState::ATTACK;
+		mNPCState = NpcState::ATTACK;
 		PlaneObject::SetScale({ 44.0f, 42.0f, 1.0f });
 		return true;
 	}
-	else if (fabs(range) < 300.0f)
+	else if (fabs(range) < 300.0f && mNPCState != NpcState::DEAD)
 	{
-		mNPCState = NPCState::RUN;
+		mNPCState = NpcState::RUN;
 		PlaneObject::SetScale({ 36.0f, 39.0f, 1.0f });
 		return true;
 	}
 	else
 	{
-		mNPCState = NPCState::IDLE;
+		mNPCState = NpcState::IDLE;
 		PlaneObject::SetScale({ 30.0f, 36.0f, 1.0f });
 		return false;
 	}

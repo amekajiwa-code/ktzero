@@ -147,6 +147,7 @@
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Floor.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GeometryUtils.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="MyCollision.cpp" />
@@ -155,7 +156,9 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="PlaneObject.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Record.cpp" />
     <ClCompile Include="sample.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -169,6 +172,7 @@
     <ClInclude Include="Device.h" />
     <ClInclude Include="DirectXTex.h" />
     <ClInclude Include="Floor.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GeometryUtils.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MyCollision.h" />
@@ -177,7 +181,9 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="PlaneObject.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Record.h" />
     <ClInclude Include="sample.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Std.h" />

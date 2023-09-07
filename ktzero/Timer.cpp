@@ -16,7 +16,8 @@ bool Timer::Frame()
 {
 	chrono::high_resolution_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<double> elapseTime = currentTime - mBeforeTime;
-	g_SecondPerFrame = mSecondPerFrame = elapseTime.count();
+	mSecondPerFrame = elapseTime.count();
+	g_SecondPerFrame = mSecondPerFrame = mSecondPerFrame * mTimeScale;
 	g_GameTimer = mGameTimer += mSecondPerFrame;
 	mBeforeTime = currentTime;
 

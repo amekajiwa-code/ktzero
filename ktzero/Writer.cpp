@@ -13,7 +13,7 @@ bool Writer::Create(IDXGISurface1* backBuffer)
         if (SUCCEEDED(hr))
         {
             mWriteFactory->CreateTextFormat(
-                L"°íµñ",
+                L"µÕ±Ù¸ð²Ã",
                 NULL,
                 DWRITE_FONT_WEIGHT_NORMAL,
                 DWRITE_FONT_STYLE_NORMAL,

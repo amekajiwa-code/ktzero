@@ -14,7 +14,7 @@ enum class PlayerState
 
 class Player : public PlaneObject
 {
-public:
+private:
 	//행동 관련
 	const float MAX_JUMP_TIME = 0.3f;
 	float mJumpTimer = 0.0f;
@@ -30,6 +30,12 @@ public:
 	bool isJump;
 	bool isFlipY;
 	PlayerState mPlayerState;
+	vector<pair<PlayerState, const Texture*>> mAniList;
+	int mAniCount = 0;
+	float mAniTimer = 0.0f;
+	float maxAniTime = 0.2f;
+	Vector3 mTargetDirection;
+public:
 	//사운드
 	Sound* mJumpSound = SoundManager::GetInstance().Load(L"res/sound/player_jump.wav");
 	Sound* mLandSound = SoundManager::GetInstance().Load(L"res/sound/player_land.wav");
@@ -39,24 +45,14 @@ public:
 	float mDashTimer = 0.0f;
 	const float MAX_Dash_TIME = 0.3f;
 	Sound* mRunSound = SoundManager::GetInstance().Load(L"res/sound/player_running_2.wav");
-	//이펙트 스프라이트
-	
-public:
 	Sound* mEffectSound = SoundManager::GetInstance().Load(L"res/sound/slash_1.wav");
-
+	//이펙트 스프라이트
+public:
 	void PlayerMove();
 	void MoveX(bool isFlipY);
-
-	vector<const Texture*>  mIdleList = vector<const Texture*>();
-	vector<const Texture*>  mRunList = vector<const Texture*>();
-	vector<const Texture*>  mJumpList = vector<const Texture*>();
-	vector<const Texture*>  mFallList = vector<const Texture*>();
-	vector<const Texture*>  mAttackList = vector<const Texture*>();
-
-	//vector<std::pair<PlayerState, const Texture*>>; <---수정예정
-
 	bool CheckCollision(Object* other);
-	vector<const Texture*> GetPlayerAnimation();
+	void AddAnimationList(PlayerState state, const Texture* texture);
+	vector<const Texture*> GetAnimationList(PlayerState state);
 	void PlayerAttack();
 
 	PlayerState GetPlayerState()
@@ -68,7 +64,13 @@ public:
 		mPlayerState = state;
 	}
 
+	void SetDirection(Vector3 direction)
+	{
+		mTargetDirection = direction;
+	}
+
 	bool GetFlip() { return isFlipY; }
+	void SetFlip(bool flip) { isFlipY = flip; }
 
 	bool Init();
 	bool Frame();
