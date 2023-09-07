@@ -44,17 +44,17 @@ bool Record::RewindNPC(Npc* npc)
 {
 	if (npcSnap.empty())
 	{
+		npc->Setinvincible(false);
+		return false;
+	}
+	else
+	{
 		NpcSnapshot nss = npcSnap.top();
-		playerSnap.pop();
+		npcSnap.pop();
 		npc->m_vPos = nss.position;
 		npc->SetNPCState(nss.state);
 		npc->m_bDead = false;
 		npc->Setinvincible(true);
 		return true;
-	}
-	else
-	{
-		npc->Setinvincible(false);
-		return false;
 	}
 }

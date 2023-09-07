@@ -51,7 +51,7 @@ bool  sample::Init()
 
     mPlayer = new Player;
     mPlayer->Set(m_pDevice, m_pImmediateContext);
-    mPlayer->SetPos({ 0.0f, 0.0f, 0.0f });
+    mPlayer->SetPos({ 0.0f, 300.0f, 0.0f });
     mPlayer->SetScale(Vector3(36.0f, 35.0f, 1.0f));
     rt = { mPlayer->m_vPos.mX * 2.0f, mPlayer->m_vPos.mY * 2.0f };
     mPlayer->SetRect(rt, mPlayer->m_vScale.mX * 2.0f, mPlayer->m_vScale.mY * 2.0f);
@@ -63,7 +63,7 @@ bool  sample::Init()
     mEffectObj->SetScale(Vector3(123.0f, 30.0f, 1.0f));
     mEffectObj->Create(TextureManager::GetInstance(), L"res/effect/spr_master_slash/master_slash_0.png", ShaderManager::GetInstance(), L"Plane.hlsl");
 
-    for (int iObj = 0; iObj < 5; iObj++)
+    for (int iObj = 0; iObj < 10; iObj++)
     {
         Npc* pObj = new Npc;
         pObj->Set(m_pDevice, m_pImmediateContext);
