@@ -29,6 +29,7 @@ private:
 	bool isFloor;
 	bool isJump;
 	bool isFlipY;
+	
 	PlayerState mPlayerState;
 	vector<pair<PlayerState, const Texture*>> mAniList;
 	int mAniCount = 0;

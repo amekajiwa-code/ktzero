@@ -24,6 +24,7 @@ bool Record::RewindPlayer(Player* player)
 	{
 		Timer::GetInstance().mTimeScale = 1.0f;
 		Timer::GetInstance().mGameTimer = 0.0f;
+		player->Setinvincible(false);
 		return false;
 	}
 	else
@@ -33,6 +34,27 @@ bool Record::RewindPlayer(Player* player)
 		player->m_vPos = pss.position;
 		player->SetPlayerState(pss.state);
 		player->SetFlip(pss.flip);
+		player->m_bDead = false;
+		player->Setinvincible(true);
 		return true;
+	}
+}
+
+bool Record::RewindNPC(Npc* npc)
+{
+	if (npcSnap.empty())
+	{
+		NpcSnapshot nss = npcSnap.top();
+		playerSnap.pop();
+		npc->m_vPos = nss.position;
+		npc->SetNPCState(nss.state);
+		npc->m_bDead = false;
+		npc->Setinvincible(true);
+		return true;
+	}
+	else
+	{
+		npc->Setinvincible(false);
+		return false;
 	}
 }

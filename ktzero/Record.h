@@ -23,8 +23,7 @@ private:
 	stack<Timer> timerSnap;
 public:
 	void RecordPlayer(Player* player);
-
-	void RecordNPC(Npc* npc);
-
 	bool RewindPlayer(Player* player);
+	void RecordNPC(Npc* npc);
+	bool RewindNPC(Npc* npc);
 };

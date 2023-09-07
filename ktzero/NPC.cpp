@@ -35,7 +35,7 @@ void Npc::Move()
 void Npc::Attack()
 {
 	OBB obb;
-	if (mTarget != nullptr)
+	if (mTarget != nullptr && (mTarget->GetInvincible() == false))
 	{
 		if (obb.RectToRect(PlaneObject::mRect, mTarget->mRect))
 		{

@@ -53,6 +53,11 @@ bool GameManager::Frame()
 	else if (isRewind)
 	{
 		isRewind = record.RewindPlayer(player);
+		for (Npc* npc : npcList)
+		{
+			record.RewindNPC(npc);
+		}
+		
 		if (isRewind == false) gameTimer = 0.0f;
 		recordTimer = 0.0f;
 	}

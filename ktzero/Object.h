@@ -19,6 +19,7 @@ class Object
 {
 public:
     bool m_bDead = false;
+    bool isInvincible = false;
     Matrix m_matWorld;
     Matrix m_matView;
     Matrix m_matProj;
@@ -61,6 +62,9 @@ public:
     virtual bool  Release();
     virtual void  SetMatrix(Matrix* matWorld, Matrix* matView, Matrix* matProj);
     virtual void  Move() {};
+public:
+    bool GetInvincible() { return isInvincible; }
+    void Setinvincible(bool invincible) { isInvincible = invincible; }
 public:
     Object();
     virtual ~Object() {}

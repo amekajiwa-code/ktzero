@@ -67,7 +67,8 @@ bool  sample::Init()
     {
         Npc* pObj = new Npc;
         pObj->Set(m_pDevice, m_pImmediateContext);
-        pObj->SetPos(Vector3(randstep(-600, 600), -static_cast<float>(g_dwWindowHeight) + 230.0f, 0.0f));
+        pObj->SetPos({ randstep(-600, 0), -static_cast<float>(g_dwWindowHeight) + 230.0f, 0.0f });
+        //pObj->SetPos(Vector3(randstep(-600, 600), -static_cast<float>(g_dwWindowHeight) + 230.0f, 0.0f));
         pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
         Vector2 rt = { pObj->m_vPos.mX, pObj->m_vPos.mY };
         pObj->SetRect(rt, pObj->m_vScale.mX * 2.0f, pObj->m_vScale.mY * 2.0f);
@@ -354,7 +355,7 @@ bool  sample::Frame()
         {
             if (obj->m_bDead) continue;
 
-            if (obb.RectToRect(mEffectObj->mRect, obj->mRect))
+            if (obb.RectToRect(mEffectObj->mRect, obj->mRect) && (obj->GetInvincible() == false))
             {
                 obj->m_bDead = true;
                 obj->SetNPCState(NpcState::DEAD);
