@@ -51,7 +51,7 @@ bool  sample::Init()
 
     mPlayer = new Player;
     mPlayer->Set(m_pDevice, m_pImmediateContext);
-    mPlayer->SetPos({ 0.0f, 0.0f, 0.0f });
+    mPlayer->SetPos({ 0.0f, 500.0f, 0.0f });
     mPlayer->SetScale(Vector3(36.0f, 35.0f, 1.0f));
     rt = { mPlayer->m_vPos.mX * 2.0f, mPlayer->m_vPos.mY * 2.0f };
     mPlayer->SetRect(rt, mPlayer->m_vScale.mX * 2.0f, mPlayer->m_vScale.mY * 2.0f);
@@ -69,7 +69,7 @@ bool  sample::Init()
     mJumpObj->SetScale(Vector3(32.0f, 51.0f, 1.0f));
     mJumpObj->Create(TextureManager::GetInstance(), L"res/effect/spr_jumpcloud/jumpcloud_0.png", ShaderManager::GetInstance(), L"Plane.hlsl");
 
-    for (int iObj = 0; iObj < 10; iObj++)
+    for (int iObj = 0; iObj < 1; iObj++)
     {
         Npc* pObj = new Npc;
         pObj->Set(m_pDevice, m_pImmediateContext);
@@ -233,6 +233,39 @@ bool  sample::Init()
         npc->AddAnimationList(NPCState::ATTACK, tex);
         tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_attack/grunt_attack_7.png");
         npc->AddAnimationList(NPCState::ATTACK, tex);
+
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_0.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_1.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_2.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_3.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_4.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_5.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_6.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_7.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_8.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_9.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_10.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_11.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_12.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_13.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_14.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
+        tex = TextureManager::GetInstance().Load(L"res/npc/Grunt/spr_grunt_hurtground/grunt_hurtground_15.png");
+        npc->AddAnimationList(NPCState::DEAD, tex);
     }
 #pragma endregion
 
@@ -284,12 +317,15 @@ bool  sample::Frame()
 
     for (auto obj : mNpcList)
     {
-        if (obj->m_bDead == false)
+        obj->Frame();
+        Vector2 rt = { obj->m_vPos.mX, obj->m_vPos.mY };
+        obj->SetRect(rt, obj->m_vScale.mX * 2.0f, obj->m_vScale.mY * 2.0f);
+        /*if (obj->m_bDead == false)
         {
             obj->Frame();
             Vector2 rt = { obj->m_vPos.mX, obj->m_vPos.mY };
             obj->SetRect(rt, obj->m_vScale.mX * 2.0f, obj->m_vScale.mY * 2.0f);
-        }
+        }*/
     }
 
     if ((Input::GetInstance().mkeyState[VK_LBUTTON] == 2) &&
@@ -317,6 +353,8 @@ bool  sample::Frame()
             if (obb.RectToRect(mEffectObj->mRect, obj->mRect))
             {
                 obj->m_bDead = true;
+                obj->SetNPCState(NPCState::DEAD);
+                obj->SetScale({56.0f, 41.0f, 1.0f});
                 mSlashDeath->Play(false);
             }
         }
@@ -338,7 +376,7 @@ bool  sample::Render()
 
     for (auto obj : mNpcList)
     {
-        if (obj->m_bDead) continue;
+        //if (obj->m_bDead) continue;
         obj->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
         obj->Render();
     }

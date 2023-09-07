@@ -1,6 +1,7 @@
 #include "NPC.h"
 #include "Timer.h"
 #include "cmath"
+#include "OBB.h"
 
 void Npc::Move()
 {
@@ -31,6 +32,18 @@ void Npc::Move()
 
 };
 
+void Npc::Attack()
+{
+	OBB obb;
+	if (mTarget != nullptr)
+	{
+		if (obb.RectToRect(PlaneObject::mRect, mTarget->mRect))
+		{
+			cout << "sfds";
+		}
+	}
+}
+
 bool Npc::Init()
 {
 	return true;
@@ -38,16 +51,18 @@ bool Npc::Init()
 
 bool Npc::Frame()
 {
-	DetectPlayer();
-
 	switch(mNPCState)
 	{
 	case NPCState::IDLE:
+		DetectPlayer();
 		break;
 	case NPCState::RUN:
 		Move();
+		DetectPlayer();
 		break;
 	case NPCState::ATTACK:
+		Attack();
+		DetectPlayer();
 		break;
 	case NPCState::DEAD:
 		break;
@@ -71,19 +86,28 @@ bool Npc::Render()
 	if (!mAniList.empty())
 	{
 		vector<const Texture*> texList = GetAnimationList(mNPCState);
-
-		if (mAniTimer < 0.1f)
 		{
-			mAniTimer += Timer::GetInstance().mSecondPerFrame * Timer::GetInstance().mTimeScale;
-		}
-		else
-		{
-			++mAniCount;
-			mAniTimer = 0.0f;
-		}
+			if (mAniTimer < 0.1f)
+			{
+				mAniTimer += Timer::GetInstance().mSecondPerFrame * Timer::GetInstance().mTimeScale;
+			}
+			else
+			{
+				++mAniCount;
+				mAniTimer = 0.0f;
+			}
 
-		if (mAniCount >= texList.size()) mAniCount = 0;
-		else texList[mAniCount]->Apply(m_pImmediateContext, 0);
+			if (mAniCount >= texList.size() && mNPCState == NPCState::DEAD)
+			{
+				--mAniCount;
+			}
+			else if (mAniCount >= texList.size())
+			{
+				mAniCount = 0;
+			}
+
+			texList[mAniCount]->Apply(m_pImmediateContext, 0);
+		}
 	}
 	PlaneObject::PostRender();
 

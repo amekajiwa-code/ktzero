@@ -30,6 +30,7 @@ public:
 	void SetTarget(Object* target);
 
 	void Move();
+	void Attack();
 
 	virtual bool Init();
 	virtual bool Frame();

@@ -9,6 +9,7 @@ enum class PlayerState
 	JUMP,
 	FALL,
 	ATTACK,
+	DEAD,
 };
 
 class Player : public PlaneObject
