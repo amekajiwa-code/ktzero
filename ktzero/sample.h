@@ -37,6 +37,8 @@ public:
     bool  Render();
     bool  Release();
 
+    void CameraViberation();
+
     sample() {};
     virtual ~sample() {};
 };

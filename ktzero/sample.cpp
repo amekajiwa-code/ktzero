@@ -1,5 +1,21 @@
 #include "sample.h"
 
+void sample::CameraViberation()
+{
+    float shakeMagnitude = 50.0f; // 흔들림 강도
+
+    // 무작위한 흔들림 벡터 생성
+    float shakeX = randstep(-shakeMagnitude, shakeMagnitude);
+    float shakeY = randstep(-shakeMagnitude, shakeMagnitude);
+
+    // 현재 카메라 위치에 흔들림 벡터를 더하여 새로운 카메라 위치 설정
+    mMainCamera.mCameraPos = {
+        mPlayer->m_vPos.mX + shakeX,
+        mPlayer->m_vPos.mY + shakeY,
+        0
+    };
+}
+
 bool  sample::Init()
 {
     #pragma region 알파블랜딩
@@ -21,7 +37,7 @@ bool  sample::Init()
     #pragma endregion
 
     #pragma region 사운드
-    mSound = SoundManager::GetInstance().Load(L"res/sound/song_youwillneverknow.ogg");
+    mSound = SoundManager::GetInstance().Load(L"res/sound/song_savageTerminal.wav");
     mSound->Play(true);
     mSound->VolumeDown();
     Sound* slash = SoundManager::GetInstance().Load(L"res/sound/death_sword.wav");
