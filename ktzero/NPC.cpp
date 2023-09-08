@@ -54,17 +54,21 @@ bool Npc::Frame()
 	switch(mNPCState)
 	{
 	case NpcState::IDLE:
+		PlaneObject::SetScale({ 30.0f, 36.0f, 1.0f });
 		DetectPlayer();
 		break;
 	case NpcState::RUN:
+		PlaneObject::SetScale({ 36.0f, 39.0f, 1.0f });
 		Move();
 		DetectPlayer();
 		break;
 	case NpcState::ATTACK:
+		PlaneObject::SetScale({ 44.0f, 42.0f, 1.0f });
 		Attack();
 		DetectPlayer();
 		break;
 	case NpcState::DEAD:
+		PlaneObject::SetScale({ 56.0f, 41.0f, 1.0f });
 		break;
 	default:
 		break;
@@ -173,22 +177,22 @@ bool Npc::DetectPlayer()
 	}
 	m_pImmediateContext->UpdateSubresource(m_pVertexBuffer, 0, nullptr, &m_VertexList.at(0), 0, 0);
 
-	if (fabs(range) < 50.0f && mNPCState != NpcState::DEAD)
+	if (fabs(range) < 100.0f && mNPCState != NpcState::DEAD)
 	{
 		mNPCState = NpcState::ATTACK;
-		PlaneObject::SetScale({ 44.0f, 42.0f, 1.0f });
+		
 		return true;
 	}
 	else if (fabs(range) < 300.0f && mNPCState != NpcState::DEAD)
 	{
 		mNPCState = NpcState::RUN;
-		PlaneObject::SetScale({ 36.0f, 39.0f, 1.0f });
+		
 		return true;
 	}
 	else
 	{
 		mNPCState = NpcState::IDLE;
-		PlaneObject::SetScale({ 30.0f, 36.0f, 1.0f });
+		
 		return false;
 	}
 }

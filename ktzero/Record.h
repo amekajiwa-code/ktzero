@@ -1,5 +1,4 @@
 #pragma once
-#include <stack>
 #include <deque>
 #include "Player.h"
 #include "NPC.h"
@@ -20,10 +19,8 @@ struct NpcSnapshot {
 class Record
 {
 private:
-	stack<PlayerSnapshot> playerSnap;
 	deque<PlayerSnapshot> playerSnap;
-	stack<NpcSnapshot> npcSnap;
-	stack<Timer> timerSnap;
+	deque<NpcSnapshot> npcSnap;
 public:
 	void RecordPlayer(Player* player);
 	bool RewindPlayer(Player* player);

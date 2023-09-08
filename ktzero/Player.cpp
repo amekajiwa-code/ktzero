@@ -96,17 +96,17 @@ void Player::PlayerMove()
     }
 
     //카메라 이동
-    if (m_vPos.mX < -static_cast<float>(g_dwWindowWidth))
+    if (m_vPos.mX < -static_cast<float>(g_dwWindowWidth) + 300.0f)
     {
-        m_vPos.mX = -static_cast<float>(g_dwWindowWidth);
+        m_vPos.mX = -static_cast<float>(g_dwWindowWidth) + 300.0f;
     }
     if (m_vPos.mY <= -static_cast<float>(g_dwWindowHeight))
     {
         m_vPos.mY = -static_cast<float>(g_dwWindowHeight);
     }
-    if (m_vPos.mX > static_cast<float>(g_dwWindowWidth))
+    if (m_vPos.mX > static_cast<float>(g_dwWindowWidth) - 300.0f)
     {
-        m_vPos.mX = static_cast<float>(g_dwWindowWidth);
+        m_vPos.mX = static_cast<float>(g_dwWindowWidth) - 300.0f;
     }
     if (m_vPos.mY > static_cast<float>(g_dwWindowHeight))
     {
@@ -138,6 +138,10 @@ void Player::PlayerAttack()
         {
             mVelocity = NormalX * mPower * g_SecondPerFrame;
         }
+        else if (PlaneObject::m_vPos.mY > (lastFloorY + 150.0f))
+        {
+            mVelocity = mTargetDirection * (mPower / 3) * g_SecondPerFrame;
+        }
         else
         {
             mVelocity = mTargetDirection * mPower * g_SecondPerFrame;
@@ -166,6 +170,7 @@ bool Player::CheckCollision(Object* other)
     if (Player::mRect.ToRect(other->mRect) && other->mTag == "Floor")
     {
         isFloor = true;
+        lastFloorY = other->m_vPos.mY;
         return true;
     }
     else

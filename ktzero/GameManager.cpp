@@ -27,7 +27,7 @@ bool GameManager::isLose()
 		return true;
 	}
 
-	if (gameTimer >= MAX_GAME_TIME)
+	if (gameTimer >= MAX_GAME_TIME && (isReplay == false))
 	{
 		return true;
 	}
@@ -46,13 +46,23 @@ bool GameManager::Frame()
 		gameTimer += Timer::GetInstance().mSecondPerFrame;
 	}
 
-	if (recordTimer <= (0.016f))
+	if (recordTimer <= (0.01f))
 	{
 		recordTimer += Timer::GetInstance().mSecondPerFrame;
+	}
+	else if (isReplay)
+	{
+		isReplay = record.ReplayPlayer(player);
+		for (Npc* npc : npcList)
+		{
+			record.ReplayNPC(npc);
+		}
+		recordTimer = 0.0f;
 	}
 	else if (isRewind)
 	{
 		isRewind = record.RewindPlayer(player);
+		if (isRewind == false) gameEndDelay = 0.0f;
 		for (Npc* npc : npcList)
 		{
 			record.RewindNPC(npc);
@@ -76,18 +86,30 @@ bool GameManager::Frame()
 
 	if (isWin())
 	{
-		fontMSG = L"그래, 이렇게 하면 되겠지.";
-		//Timer::GetInstance().mTimeScale = 1.0f;
+		if (gameEndDelay <= MAX_END_DELAY)
+		{
+			gameEndDelay += Timer::GetInstance().mSecondPerFrame;
+		}
+		else {
+			fontMSG = L"그래, 이렇게 하면 되겠지.";
+			isReplay = true;
+		}
 	}
 
 	if (isLose())
 	{
-		fontMSG = L"아니... 통하지 않을 거야.";
-		Timer::GetInstance().mTimeScale = 2.0f;
-		isRewind = true;
+		if (gameEndDelay <= MAX_END_DELAY)
+		{
+			gameEndDelay += Timer::GetInstance().mSecondPerFrame;
+		}
+		else {
+			fontMSG = L"아니... 통하지 않을 거야.";
+			Timer::GetInstance().mTimeScale = 5.0f;
+			isRewind = true;
+		}
 	}
 
-	Writer::GetInstance().AddText(fontMSG, 400, 200, { 1.0f, 1.0f, 1.0f, 1.0f });
+	Writer::GetInstance().AddText(fontMSG, static_cast<float>(g_dwWindowHeight / 2) + 80, 200, { 1.0f, 1.0f, 1.0f, 1.0f });
 
 	return true;
 }

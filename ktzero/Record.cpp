@@ -8,7 +8,7 @@ void Record::RecordPlayer(Player* player)
 	pss.state = player->GetPlayerState();
 	pss.flip = player->GetFlip();
 	pss.RadianAngle = player->GetRadianAngle();
-	playerSnap.push(pss);
+	playerSnap.push_back(pss);
 }
 
 void Record::RecordNPC(Npc* npc)
@@ -16,7 +16,7 @@ void Record::RecordNPC(Npc* npc)
 	NpcSnapshot nss;
 	nss.position = npc->m_vPos;
 	nss.state = npc->GetNPCState();
-	npcSnap.push(nss);
+	npcSnap.push_back(nss);
 }
 
 bool Record::RewindPlayer(Player* player)
@@ -30,8 +30,8 @@ bool Record::RewindPlayer(Player* player)
 	}
 	else
 	{
-		PlayerSnapshot pss = playerSnap.top();
-		playerSnap.pop();
+		PlayerSnapshot pss = playerSnap.back();
+		playerSnap.pop_back();
 		player->m_vPos = pss.position;
 		player->SetPlayerState(pss.state);
 		player->SetFlip(pss.flip);
@@ -51,8 +51,8 @@ bool Record::RewindNPC(Npc* npc)
 	}
 	else
 	{
-		NpcSnapshot nss = npcSnap.top();
-		npcSnap.pop();
+		NpcSnapshot nss = npcSnap.back();
+		npcSnap.pop_back();
 		npc->m_vPos = nss.position;
 		npc->SetNPCState(nss.state);
 		npc->m_bDead = false;
@@ -65,20 +65,17 @@ bool Record::ReplayPlayer(Player* player)
 {
 	if (playerSnap.empty())
 	{
-		Timer::GetInstance().mTimeScale = 1.0f;
-		Timer::GetInstance().mGameTimer = 0.0f;
-		player->Setinvincible(false);
+		Timer::GetInstance().mTimeScale = 0.0f;
 		return false;
 	}
 	else
 	{
-		PlayerSnapshot pss = playerSnap.top();
-		playerSnap.pop();
+		PlayerSnapshot pss = playerSnap.front();
+		playerSnap.pop_front();
 		player->m_vPos = pss.position;
 		player->SetPlayerState(pss.state);
 		player->SetFlip(pss.flip);
 		player->SetRadianAngle(pss.RadianAngle);
-		player->m_bDead = false;
 		player->Setinvincible(true);
 		return true;
 	}
@@ -88,16 +85,14 @@ bool Record::ReplayNPC(Npc* npc)
 {
 	if (npcSnap.empty())
 	{
-		npc->Setinvincible(false);
 		return false;
 	}
 	else
 	{
-		NpcSnapshot nss = npcSnap.top();
-		npcSnap.pop();
+		NpcSnapshot nss = npcSnap.front();
+		npcSnap.pop_front();
 		npc->m_vPos = nss.position;
 		npc->SetNPCState(nss.state);
-		npc->m_bDead = false;
 		npc->Setinvincible(true);
 		return true;
 	}

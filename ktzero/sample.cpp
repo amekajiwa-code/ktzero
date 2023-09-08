@@ -32,11 +32,11 @@ bool  sample::Init()
     mMapObj = new PlaneObject;
     mMapObj->Set(m_pDevice, m_pImmediateContext);
     mMapObj->SetScale(Vector3(static_cast<float>(g_dwWindowWidth), static_cast<float>(g_dwWindowHeight), 1.0f));
-    mMapObj->Create(TextureManager::GetInstance(), L"res/background/LastStage.bmp", ShaderManager::GetInstance(), L"Plane.hlsl");
+    mMapObj->Create(TextureManager::GetInstance(), L"res/background/maple_bg_1.png", ShaderManager::GetInstance(), L"Plane.hlsl");
 
     mFloorObj = new PlaneObject;
     mFloorObj->Set(m_pDevice, m_pImmediateContext);
-    mFloorObj->SetPos({ 0.0f, -static_cast<float>(g_dwWindowHeight) + 170.0f, 0.0f });
+    mFloorObj->SetPos({ 0.0f, -static_cast<float>(g_dwWindowHeight) + 250.0f, 0.0f });
     mFloorObj->SetScale(Vector3(static_cast<float>(g_dwWindowWidth), 20.0f, 1.0f));
     Vector2 rt = { mFloorObj->m_vPos.mX, mFloorObj->m_vPos.mY};
     mFloorObj->SetRect(rt, mFloorObj->m_vScale.mX * 2.0f, mFloorObj->m_vScale.mY * 2.0f);
@@ -51,7 +51,7 @@ bool  sample::Init()
 
     mPlayer = new Player;
     mPlayer->Set(m_pDevice, m_pImmediateContext);
-    mPlayer->SetPos({ 0.0f, 300.0f, 0.0f });
+    mPlayer->SetPos({ 0.0f, 0.0f, 0.0f });
     mPlayer->SetScale(Vector3(36.0f, 35.0f, 1.0f));
     rt = { mPlayer->m_vPos.mX * 2.0f, mPlayer->m_vPos.mY * 2.0f };
     mPlayer->SetRect(rt, mPlayer->m_vScale.mX * 2.0f, mPlayer->m_vScale.mY * 2.0f);
@@ -63,20 +63,17 @@ bool  sample::Init()
     mEffectObj->SetScale(Vector3(123.0f, 30.0f, 1.0f));
     mEffectObj->Create(TextureManager::GetInstance(), L"res/effect/spr_master_slash/master_slash_0.png", ShaderManager::GetInstance(), L"Plane.hlsl");
 
-    for (int iObj = 0; iObj < 10; iObj++)
-    {
-        Npc* pObj = new Npc;
-        pObj->Set(m_pDevice, m_pImmediateContext);
-        pObj->SetPos({ randstep(-600, 0), -static_cast<float>(g_dwWindowHeight) + 230.0f, 0.0f });
-        //pObj->SetPos(Vector3(randstep(-600, 600), -static_cast<float>(g_dwWindowHeight) + 230.0f, 0.0f));
-        pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
-        Vector2 rt = { pObj->m_vPos.mX, pObj->m_vPos.mY };
-        pObj->SetRect(rt, pObj->m_vScale.mX * 2.0f, pObj->m_vScale.mY * 2.0f);
-        pObj->Create(TextureManager::GetInstance(), L"res/npc/Grunt/spr_grunt_idle/grunt_idle_0.png",
-            ShaderManager::GetInstance(), L"Plane.hlsl");
-        mNpcList.push_back(pObj);
-        pObj->SetTarget(mPlayer);
-    }
+    Npc* pObj = new Npc;
+    pObj->Set(m_pDevice, m_pImmediateContext);
+    pObj->SetPos({ -600.0f, -static_cast<float>(g_dwWindowHeight) + 290.0f, 0.0f });
+
+    pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
+    rt = { pObj->m_vPos.mX, pObj->m_vPos.mY };
+    pObj->SetRect(rt, pObj->m_vScale.mX * 2.0f, pObj->m_vScale.mY * 2.0f);
+    pObj->Create(TextureManager::GetInstance(), L"res/npc/Grunt/spr_grunt_idle/grunt_idle_0.png",
+        ShaderManager::GetInstance(), L"Plane.hlsl");
+    mNpcList.push_back(pObj);
+    pObj->SetTarget(mPlayer);
     #pragma endregion
 
     #pragma region 플레이어_애니메이션
@@ -344,7 +341,7 @@ bool  sample::Frame()
         float deltaY = curMouse.mY - mMainCamera.mCameraPos.mY; // Y 좌표 차이
         float angleToMouse = atan2(deltaY, deltaX); // 라디안 단위로 각도 계산
         //mEffectObj->mRect.SetAngle(RadianToDegree(angleToMouse));
-        if (GameManager::GetInstance().isRewind == false)
+        if (GameManager::GetInstance().isRewind == false || GameManager::GetInstance().isReplay == false)
         {
             mPlayer->SetRadianAngle(angleToMouse);
         }

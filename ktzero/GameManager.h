@@ -14,8 +14,11 @@ public:
 	Record record;
 	float recordTimer = 0.0f;
 	bool isRewind = false;
-	const float MAX_GAME_TIME = 10.0f;
+	bool isReplay = false;
+	const float MAX_GAME_TIME = 60.0f;
 	float gameTimer = 0.0f;
+	const float MAX_END_DELAY = 1.0f;
+	float gameEndDelay = 0.0f;
 
 	virtual ~GameManager();
 

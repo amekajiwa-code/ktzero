@@ -26,7 +26,7 @@ public:
 	void SetNPCState(NpcState state);
 	vector<const Texture*> GetAnimationList(NpcState state);
 	void AddAnimationList(NpcState state, const Texture* texture);
-	bool DetectPlayer();
+	virtual bool DetectPlayer();
 	void SetTarget(Object* target);
 
 	void Move();
