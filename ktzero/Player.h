@@ -36,6 +36,7 @@ private:
 	float mAniTimer = 0.0f;
 	float maxAniTime = 0.2f;
 	Vector3 mTargetDirection;
+	float mRadianAngle = 0.0f;
 public:
 	//»ç¿îµå
 	Sound* mJumpSound = SoundManager::GetInstance().Load(L"res/sound/player_jump.wav");
@@ -68,6 +69,16 @@ public:
 	void SetDirection(Vector3 direction)
 	{
 		mTargetDirection = direction;
+	}
+
+	float GetRadianAngle()
+	{
+		return mRadianAngle;
+	}
+
+	void SetRadianAngle(float angle)
+	{
+		mRadianAngle = angle;
 	}
 
 	bool GetFlip() { return isFlipY; }

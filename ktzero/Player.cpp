@@ -2,6 +2,8 @@
 #include "Input.h"
 #include "Writer.h"
 #include "Timer.h"
+#include "GameManager.h"
+#include <stack>
 
 void Player::MoveX(bool isFlipY)
 {
@@ -117,6 +119,7 @@ void Player::PlayerAttack()
     if (mAttackTimer <= MAX_ATTACK_TIME)
     {
         mTargetDirection = Input::GetInstance().curWorldPos - m_vPos;
+
         Vector3 NormalX;
         mTargetDirection.Normalize();
 
@@ -313,6 +316,7 @@ bool Player::Render()
 
         texList[mAniCount]->Apply(m_pImmediateContext, 0);
     }
+    
 
     if (isFlipY)
     {

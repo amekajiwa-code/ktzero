@@ -52,13 +52,14 @@ bool GameManager::Frame()
 	}
 	else if (isRewind)
 	{
+		isRewind = record.RewindPlayer(player);
 		for (Npc* npc : npcList)
 		{
 			record.RewindNPC(npc);
 		}
-		isRewind = record.RewindPlayer(player);
 		
 		if (isRewind == false) gameTimer = 0.0f;
+		recordTimer = 0.0f;
 	}
 	else
 	{
@@ -76,13 +77,13 @@ bool GameManager::Frame()
 	if (isWin())
 	{
 		fontMSG = L"그래, 이렇게 하면 되겠지.";
-		Timer::GetInstance().mTimeScale = 0.0f;
+		//Timer::GetInstance().mTimeScale = 1.0f;
 	}
 
 	if (isLose())
 	{
 		fontMSG = L"아니... 통하지 않을 거야.";
-		Timer::GetInstance().mTimeScale = 1.0f;
+		Timer::GetInstance().mTimeScale = 2.0f;
 		isRewind = true;
 	}
 

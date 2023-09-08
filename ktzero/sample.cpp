@@ -343,8 +343,12 @@ bool  sample::Frame()
         float deltaX = curMouse.mX - mMainCamera.mCameraPos.mX; // X 좌표 차이
         float deltaY = curMouse.mY - mMainCamera.mCameraPos.mY; // Y 좌표 차이
         float angleToMouse = atan2(deltaY, deltaX); // 라디안 단위로 각도 계산
-        mEffectObj->mRect.SetAngle(RadianToDegree(angleToMouse));
-    
+        //mEffectObj->mRect.SetAngle(RadianToDegree(angleToMouse));
+        if (GameManager::GetInstance().isRewind == false)
+        {
+            mPlayer->SetRadianAngle(angleToMouse);
+        }
+
         Input::GetInstance().curWorldPos = curMouse;
     }
 
@@ -394,7 +398,9 @@ bool  sample::Render()
     if (mPlayer->GetPlayerState() == PlayerState::ATTACK)
     {
         m_pImmediateContext->UpdateSubresource(mEffectObj->m_pVertexBuffer, 0, nullptr, &mEffectObj->m_VertexList.at(0), 0, 0);
-        mEffectObj->m_matWorld.ZRotate(DegreeToRadian(mEffectObj->mRect.mAngle));
+        mEffectObj->m_matWorld.ZRotate(mPlayer->GetRadianAngle());
+        //mEffectObj->m_matWorld.ZRotate(DegreeToRadian(mEffectObj->mRect.mAngle));
+        
         mEffectObj->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
         mEffectObj->PreRender();
 
