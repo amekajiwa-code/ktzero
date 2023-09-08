@@ -53,5 +53,6 @@ public:
 	Sound* Load(wstring filePath);
 	Sound* GetPtr(wstring key);
 	bool Get(wstring key, Sound& ret);
+	unordered_map<string, Sound*> playListMap;
 };
 

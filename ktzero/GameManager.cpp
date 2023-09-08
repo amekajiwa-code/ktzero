@@ -61,8 +61,20 @@ bool GameManager::Frame()
 	}
 	else if (isRewind)
 	{
+		auto it = SoundManager::GetInstance().playListMap.find("rewindSound");
+		if (it != SoundManager::GetInstance().playListMap.end())
+		{
+			it->second->Play(false);
+			SoundManager::GetInstance().playListMap.erase(it);
+		}
+		
 		isRewind = record.RewindPlayer(player);
-		if (isRewind == false) gameEndDelay = 0.0f;
+		if (isRewind == false)
+		{
+			Sound* rewindSound = SoundManager::GetInstance().Load(L"res/sound/Rewind.wav");
+			SoundManager::GetInstance().playListMap.insert(make_pair("rewindSound", rewindSound));
+			gameEndDelay = 0.0f;
+		}
 		for (Npc* npc : npcList)
 		{
 			record.RewindNPC(npc);
@@ -104,7 +116,7 @@ bool GameManager::Frame()
 		}
 		else {
 			fontMSG = L"아니... 통하지 않을 거야.";
-			Timer::GetInstance().mTimeScale = 5.0f;
+			Timer::GetInstance().mTimeScale = 10.0f;
 			isRewind = true;
 		}
 	}

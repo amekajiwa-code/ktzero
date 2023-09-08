@@ -11,7 +11,6 @@ class Core : public Device
 public:
     Camera mMainCamera;
     Sound* mSound = nullptr;
-    Sound* mSlashDeath;
 
     virtual bool  Init();
     virtual bool  Frame();

@@ -24,7 +24,12 @@ bool  sample::Init()
     mSound = SoundManager::GetInstance().Load(L"res/sound/song_youwillneverknow.ogg");
     mSound->Play(true);
     mSound->VolumeDown();
-    mSlashDeath = SoundManager::GetInstance().Load(L"res/sound/death_sword.wav");
+    Sound* slash = SoundManager::GetInstance().Load(L"res/sound/death_sword.wav");
+    SoundManager::GetInstance().playListMap.insert(make_pair("slash", slash));
+    Sound* playerDeath = SoundManager::GetInstance().Load(L"res/sound/playerdie.wav");
+    SoundManager::GetInstance().playListMap.insert(make_pair("playerDeath", playerDeath));
+    Sound* rewindSound = SoundManager::GetInstance().Load(L"res/sound/Rewind.wav");
+    SoundManager::GetInstance().playListMap.insert(make_pair("rewindSound", rewindSound));
     #pragma endregion
 
     #pragma region 오브젝트세팅
@@ -67,7 +72,7 @@ bool  sample::Init()
     {
         Npc* pObj = new Npc;
         pObj->Set(m_pDevice, m_pImmediateContext);
-        pObj->SetPos({ randstep(-600, 600), -static_cast<float>(g_dwWindowHeight) + 290.0f, 0.0f });
+        pObj->SetPos({ randstep(-1000, 1000), -static_cast<float>(g_dwWindowHeight) + 290.0f, 0.0f });
         //pObj->SetPos({ -600.0f, -static_cast<float>(g_dwWindowHeight) + 290.0f, 0.0f });
         pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
         rt = { pObj->m_vPos.mX, pObj->m_vPos.mY };
@@ -394,7 +399,7 @@ bool  sample::Frame()
                 obj->m_bDead = true;
                 obj->SetNPCState(NpcState::DEAD);
                 obj->SetScale({56.0f, 41.0f, 1.0f});
-                mSlashDeath->Play(false);
+                SoundManager::GetInstance().playListMap.find("slash")->second->Play(false);
             }
         }
     }

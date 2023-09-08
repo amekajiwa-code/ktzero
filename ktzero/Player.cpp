@@ -206,7 +206,11 @@ bool Player::Init()
 
 bool Player::Frame()
 {
-    if (PlaneObject::m_bDead) mPlayerState = PlayerState::DEAD;
+    if (PlaneObject::m_bDead)
+    {
+        SoundManager::GetInstance().playListMap.find("playerDeath")->second->Play(false);
+        mPlayerState = PlayerState::DEAD;
+    }       
 
     switch (mPlayerState)
     {
