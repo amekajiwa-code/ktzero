@@ -29,7 +29,7 @@ private:
 	bool isFloor;
 	bool isJump;
 	bool isFlipY;
-	float lastFloorY = 0.0f;
+	float lastFloorY = -300.0f;
 	
 	PlayerState mPlayerState;
 	vector<pair<PlayerState, const Texture*>> mAniList;

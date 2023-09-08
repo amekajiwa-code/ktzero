@@ -63,17 +63,29 @@ bool  sample::Init()
     mEffectObj->SetScale(Vector3(123.0f, 30.0f, 1.0f));
     mEffectObj->Create(TextureManager::GetInstance(), L"res/effect/spr_master_slash/master_slash_0.png", ShaderManager::GetInstance(), L"Plane.hlsl");
 
-    Npc* pObj = new Npc;
-    pObj->Set(m_pDevice, m_pImmediateContext);
-    pObj->SetPos({ -600.0f, -static_cast<float>(g_dwWindowHeight) + 290.0f, 0.0f });
+    for (int i = 0; i < 5; ++i)
+    {
+        Npc* pObj = new Npc;
+        pObj->Set(m_pDevice, m_pImmediateContext);
+        pObj->SetPos({ randstep(-600, 600), -static_cast<float>(g_dwWindowHeight) + 290.0f, 0.0f });
+        //pObj->SetPos({ -600.0f, -static_cast<float>(g_dwWindowHeight) + 290.0f, 0.0f });
+        pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
+        rt = { pObj->m_vPos.mX, pObj->m_vPos.mY };
+        pObj->SetRect(rt, pObj->m_vScale.mX * 2.0f, pObj->m_vScale.mY * 2.0f);
+        pObj->Create(TextureManager::GetInstance(), L"res/npc/Grunt/spr_grunt_idle/grunt_idle_0.png",
+            ShaderManager::GetInstance(), L"Plane.hlsl");
+        pObj->SetTarget(mPlayer);
+        mNpcList.push_back(pObj);
 
-    pObj->SetScale(Vector3(30.0f, 36.0f, 1.0f));
-    rt = { pObj->m_vPos.mX, pObj->m_vPos.mY };
-    pObj->SetRect(rt, pObj->m_vScale.mX * 2.0f, pObj->m_vScale.mY * 2.0f);
-    pObj->Create(TextureManager::GetInstance(), L"res/npc/Grunt/spr_grunt_idle/grunt_idle_0.png",
-        ShaderManager::GetInstance(), L"Plane.hlsl");
-    mNpcList.push_back(pObj);
-    pObj->SetTarget(mPlayer);
+        Object* mNpcEffectObj = new PlaneObject;
+        mNpcEffectObj->Set(m_pDevice, m_pImmediateContext);
+        mNpcEffectObj->SetPos({ 0.0f, 0.0f, 0.0f });
+        mNpcEffectObj->SetScale(Vector3(64.0f, 64.0f, 1.0f));
+        mNpcEffectObj->Create(TextureManager::GetInstance(), L"res/effect/spr_gruntslash/gruntslash_0.png", ShaderManager::GetInstance(), L"Plane.hlsl");
+        mNpcEffectObjList.push_back(mNpcEffectObj);
+    } 
+
+    
     #pragma endregion
 
     #pragma region 플레이어_애니메이션
@@ -169,16 +181,27 @@ bool  sample::Init()
     #pragma endregion
     
     #pragma region 이펙트_애니메이션
-    const Texture* tex5 = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_0.png");
-    mEffectList.push_back(tex5);
-    tex5 = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_1.png");
-    mEffectList.push_back(tex5);
-    tex5 = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_2.png");
-    mEffectList.push_back(tex5);
-    tex5 = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_3.png");
-    mEffectList.push_back(tex5);
-    tex5 = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_4.png");
-    mEffectList.push_back(tex5);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_0.png");
+    mEffectList.push_back(tex);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_1.png");
+    mEffectList.push_back(tex);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_2.png");
+    mEffectList.push_back(tex);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_3.png");
+    mEffectList.push_back(tex);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_slash/slash_4.png");
+    mEffectList.push_back(tex);
+
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_gruntslash/gruntslash_0.png");
+    mNpcEffectList.push_back(tex);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_gruntslash/gruntslash_1.png");
+    mNpcEffectList.push_back(tex);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_gruntslash/gruntslash_2.png");
+    mNpcEffectList.push_back(tex);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_gruntslash/gruntslash_3.png");
+    mNpcEffectList.push_back(tex);
+    tex = TextureManager::GetInstance().Load(L"res/effect/spr_gruntslash/gruntslash_4.png");
+    mNpcEffectList.push_back(tex);
     #pragma endregion
 
     #pragma region NPC_애니메이션
@@ -329,6 +352,16 @@ bool  sample::Frame()
         }
     }
 
+    for (int i = 0; i < mNpcList.size(); ++i)
+    {
+        Vector3 newPos = mNpcList.at(i)->m_vPos;
+        newPos.mX += 10.0f;
+        mNpcEffectObjList.at(i)->SetPos(newPos);
+        /*Vector2 rt = { mNpcEffectObjList.at(i)->m_vPos.mX, mNpcEffectObjList.at(i)->m_vPos.mY };
+        mNpcEffectObjList.at(i)->SetRect(rt, mNpcEffectObjList.at(i)->m_vScale.mX * 2.0f, mNpcEffectObjList.at(i)->m_vScale.mY * 2.0f);*/
+        mNpcEffectObjList.at(i)->Frame();
+    }
+
     if ((Input::GetInstance().mkeyState[VK_LBUTTON] == 2) &&
         (mPlayer->GetPlayerState() != PlayerState::ATTACK) &&
         (mPlayer->GetPlayerState() != PlayerState::DEAD))
@@ -412,6 +445,47 @@ bool  sample::Render()
         mEffectObj->PostRender();
     }
 
+    for (int i = 0; i < mNpcList.size(); ++i)
+    {
+        if (mNpcList.at(i)->GetNPCState() == NpcState::ATTACK)
+        {
+            float range = mNpcEffectObjList.at(i)->m_vPos.mX - mPlayer->m_vPos.mX;
+
+            if (range > 0)
+            {
+                mNpcEffectObjList.at(i)->m_VertexList[0].t.mX = 1.0f; mNpcEffectObjList.at(i)->m_VertexList[0].t.mY = 0.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[1].t.mX = 0.0f; mNpcEffectObjList.at(i)->m_VertexList[1].t.mY = 0.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[2].t.mX = 1.0f; mNpcEffectObjList.at(i)->m_VertexList[2].t.mY = 1.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[3].t.mX = 1.0f; mNpcEffectObjList.at(i)->m_VertexList[3].t.mY = 1.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[4].t.mX = 0.0f; mNpcEffectObjList.at(i)->m_VertexList[4].t.mY = 0.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[5].t.mX = 0.0f; mNpcEffectObjList.at(i)->m_VertexList[5].t.mY = 1.0f;
+            }
+            else
+            {
+                mNpcEffectObjList.at(i)->m_VertexList[0].t.mX = 0.0f; mNpcEffectObjList.at(i)->m_VertexList[0].t.mY = 0.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[1].t.mX = 1.0f; mNpcEffectObjList.at(i)->m_VertexList[1].t.mY = 0.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[2].t.mX = 0.0f; mNpcEffectObjList.at(i)->m_VertexList[2].t.mY = 1.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[3].t.mX = 0.0f; mNpcEffectObjList.at(i)->m_VertexList[3].t.mY = 1.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[4].t.mX = 1.0f; mNpcEffectObjList.at(i)->m_VertexList[4].t.mY = 0.0f;
+                mNpcEffectObjList.at(i)->m_VertexList[5].t.mX = 1.0f; mNpcEffectObjList.at(i)->m_VertexList[5].t.mY = 1.0f;
+            }
+
+            m_pImmediateContext->UpdateSubresource(mNpcEffectObjList.at(i)->m_pVertexBuffer, 0, nullptr, &mNpcEffectObjList.at(i)->m_VertexList.at(0), 0, 0);
+            mNpcEffectObjList.at(i)->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
+            mNpcEffectObjList.at(i)->PreRender();
+
+            if (!mNpcEffectList.empty())
+            {
+                mNpcEffectIndex = (int)(g_GameTimer * 5 * Timer::GetInstance().mTimeScale) % mNpcEffectList.size();
+                if (mNpcEffectList[mNpcEffectIndex] != nullptr)
+                {
+                    mNpcEffectList[mNpcEffectIndex]->Apply(m_pImmediateContext, 0);
+                }
+            }
+            mNpcEffectObjList.at(i)->PostRender();
+        }
+    }
+    
     #pragma endregion
 
    mCursorObj->SetMatrix(nullptr, &mMainCamera.mMatView, &mMainCamera.mMatOrthonormalProjection);
