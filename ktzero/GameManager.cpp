@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include "Timer.h"
 #include "Writer.h"
+#include "Input.h"
 
 bool GameManager::isWin()
 {
@@ -68,19 +69,18 @@ bool GameManager::Frame()
 			SoundManager::GetInstance().playListMap.erase(it);
 		}
 		
-		isRewind = record.RewindPlayer(player);
+  		isRewind = record.RewindPlayer(player);
 		if (isRewind == false)
 		{
 			Sound* rewindSound = SoundManager::GetInstance().Load(L"res/sound/Rewind.wav");
 			SoundManager::GetInstance().playListMap.insert(make_pair("rewindSound", rewindSound));
-			gameEndDelay = 0.0f;
+			gameTimer = 0.0f;
 		}
 		for (Npc* npc : npcList)
 		{
 			record.RewindNPC(npc);
 		}
 		
-		if (isRewind == false) gameTimer = 0.0f;
 		recordTimer = 0.0f;
 	}
 	else
@@ -103,19 +103,18 @@ bool GameManager::Frame()
 			gameEndDelay += Timer::GetInstance().mSecondPerFrame;
 		}
 		else {
-			fontMSG = L"그래, 이렇게 하면 되겠지.";
+			fontMSG = L"	 그래,\n   이렇게 하면 되겠지.";
 			isReplay = true;
 		}
 	}
 
 	if (isLose())
 	{
-		if (gameEndDelay <= MAX_END_DELAY)
+		fontMSG = L"	 아니...\n   통하지 않을 거야.\n\n  (Space 눌러 재시작)";
+		//Timer::GetInstance().mTimeScale = 0.0f;
+
+		if (Input::GetInstance().mkeyState[VK_SPACE] == static_cast<DWORD>(KeyState::KEY_DOWN))
 		{
-			gameEndDelay += Timer::GetInstance().mSecondPerFrame;
-		}
-		else {
-			fontMSG = L"아니... 통하지 않을 거야.";
 			Timer::GetInstance().mTimeScale = 10.0f;
 			isRewind = true;
 		}

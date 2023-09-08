@@ -43,32 +43,35 @@ void Player::MoveX(bool isFlipY)
 void Player::PlayerMove()
 {
     //플레이어 조작
-    if (Input::GetInstance().mkeyState['W'] == static_cast<DWORD>(KeyState::KEY_DOWN) && isFloor)
+    if (GameManager::GetInstance().isReplay == false)
     {
-        mJumpSound->Play(false);
-        isJump = true;
-        isLandSound = false;
-    }
-    if (Input::GetInstance().mkeyState['S'] == static_cast<DWORD>(KeyState::KEY_HOLD) && !isFloor)
-    {
-        m_vPos.mY -= 800.0f * g_SecondPerFrame;
-    }
-    if (Input::GetInstance().mkeyState['A'] == static_cast<DWORD>(KeyState::KEY_HOLD))
-    {
-        isFlipY = true;
-        MoveX(isFlipY);
-    }
-    if (Input::GetInstance().mkeyState['D'] == static_cast<DWORD>(KeyState::KEY_HOLD))
-    {
-        isFlipY = false;
-        MoveX(isFlipY);
-    }
-    if (Input::GetInstance().mkeyState['A'] == static_cast<DWORD>(KeyState::KEY_UP) || 
-        Input::GetInstance().mkeyState['D'] == static_cast<DWORD>(KeyState::KEY_UP))
-    {
-        mPlayerState = PlayerState::IDLE;
-        isDashSound = false;
-        mDashTimer = 0.0f;
+        if (Input::GetInstance().mkeyState['W'] == static_cast<DWORD>(KeyState::KEY_DOWN) && isFloor)
+        {
+            mJumpSound->Play(false);
+            isJump = true;
+            isLandSound = false;
+        }
+        if (Input::GetInstance().mkeyState['S'] == static_cast<DWORD>(KeyState::KEY_HOLD) && !isFloor)
+        {
+            m_vPos.mY -= 800.0f * g_SecondPerFrame;
+        }
+        if (Input::GetInstance().mkeyState['A'] == static_cast<DWORD>(KeyState::KEY_HOLD))
+        {
+            isFlipY = true;
+            MoveX(isFlipY);
+        }
+        if (Input::GetInstance().mkeyState['D'] == static_cast<DWORD>(KeyState::KEY_HOLD))
+        {
+            isFlipY = false;
+            MoveX(isFlipY);
+        }
+        if (Input::GetInstance().mkeyState['A'] == static_cast<DWORD>(KeyState::KEY_UP) ||
+            Input::GetInstance().mkeyState['D'] == static_cast<DWORD>(KeyState::KEY_UP))
+        {
+            mPlayerState = PlayerState::IDLE;
+            isDashSound = false;
+            mDashTimer = 0.0f;
+        }
     }
 
     if (isJump && (mJumpTimer <= MAX_JUMP_TIME))
@@ -208,9 +211,20 @@ bool Player::Frame()
 {
     if (PlaneObject::m_bDead)
     {
-        SoundManager::GetInstance().playListMap.find("playerDeath")->second->Play(false);
         mPlayerState = PlayerState::DEAD;
-    }       
+
+        auto it = SoundManager::GetInstance().playListMap.find("playerDeath");
+        if (it != SoundManager::GetInstance().playListMap.end())
+        {
+            it->second->Play(false);
+            SoundManager::GetInstance().playListMap.erase(it);
+        }
+    }
+    else
+    {
+        Sound* playerDeath = SoundManager::GetInstance().Load(L"res/sound/playerdie.wav");
+        SoundManager::GetInstance().playListMap.insert(make_pair("playerDeath", playerDeath));
+    }
 
     switch (mPlayerState)
     {

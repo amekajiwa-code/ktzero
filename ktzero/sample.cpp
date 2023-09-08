@@ -385,7 +385,8 @@ bool  sample::Frame()
 
     if ((Input::GetInstance().mkeyState[VK_LBUTTON] == 2) &&
         (mPlayer->GetPlayerState() != PlayerState::ATTACK) &&
-        (mPlayer->GetPlayerState() != PlayerState::DEAD))
+        (mPlayer->GetPlayerState() != PlayerState::DEAD) &&
+        (GameManager::GetInstance().isReplay == false))
     {
         mPlayer->mEffectSound->PlayEffect();
         mPlayer->SetPlayerState(PlayerState::ATTACK);
